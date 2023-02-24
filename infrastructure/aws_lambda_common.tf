@@ -4,22 +4,22 @@ resource "aws_iam_policy" "lambda_logging" {
   description = "IAM policy for logging from lambdas"
 
   policy = <<EOF
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Action": [
-                    "logs:CreateLogGroup",
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                    "logs:CreateLogGroup"
-                ],
-                "Resource": "arn:aws:logs:*:*:*",
-                "Effect": "Allow"
-            }
-        ]
-    }
-    EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": "arn:aws:logs:*:*:*",
+            "Effect": "Allow"
+        }
+    ]
+}
+EOF
 }
 
 resource "aws_iam_policy" "lambda_s3_pol" {
@@ -28,16 +28,16 @@ resource "aws_iam_policy" "lambda_s3_pol" {
   description = "IAM policy for writing/reading SQS from a lambda"
 
   policy = <<EOF
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-               "Sid": "",
-               "Effect": "Allow",
-               "Action": "s3:*",
-               "Resource": "*"
-            }
-        ]
-    }
-    EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        }
+    ]
+}
+EOF
 }

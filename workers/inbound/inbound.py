@@ -2,7 +2,7 @@ import boto3
 import os
 import tempfile
 import urllib
-import pandas as pd
+import csv
 from utilities import debug_level
 import logging
 
@@ -39,6 +39,31 @@ def process_event(event, context):
     s3.download_file(bucket, key, temp_file)
 
     try:
-        pass
+        with open(temp_file, encoding='utf-8-sig', newline='') as csv_file:
+            reader = csv.DictReader(csv_file, delimiter=',')
+            for line in reader:
+                print(line)
+                # WILL ENABLE NEXT SECTION ON SQS ISSUE
+                # SQS QUEUE IS NOT YET SET UP
+                # sqs_message_entries = []
+                """
+                for line in reader:
+                    sqs_entry = build_dictionary(line)
+                    if sqs_entry != {}:
+                        sqs_message_entries.append(sqs_entry)
+                    if len(sqs_message_entries) == 10:
+                        sqs.send_message_batch(
+                        QueueUrl=os.getenv('SQS_URL'),
+                        Entries=sqs_message_entries
+                        )    
+                        logging.info("CSV Entries Batch sent to SQS queue")
+                        sqs_message_entries = []
+                if(len(sqs_message_entries) > 0):
+                    sqs.send_message_batch(
+                    QueueUrl=os.getenv('SQS_URL'),
+                    Entries=sqs_message_entries
+                    )    
+                    logging.info("All CSV Entries sent to SQS queue")
+                """
     except FileNotFoundError:
-        pass
+        logging.error("File not found!")
