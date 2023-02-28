@@ -27,7 +27,7 @@ def process_event(event, context):
     """
 
     s3 = boto3.client('s3')
-    #sqs = boto3.client('sqs')
+    sqs = boto3.client('sqs')
 
     event = next(iter(event['Records']))
 
@@ -43,14 +43,12 @@ def process_event(event, context):
             reader = csv.DictReader(csv_file, delimiter=',')
             for line in reader:
                 print(line)
-                # WILL ENABLE NEXT SECTION ON SQS ISSUE
-                # SQS QUEUE IS NOT YET SET UP
-                # sqs_message_entries = []
-                """
+                sqs_message_entries = []
                 for line in reader:
-                    sqs_entry = build_dictionary(line)
-                    if sqs_entry != {}:
-                        sqs_message_entries.append(sqs_entry)
+                    #sqs_entry = build_dictionary(line)
+                    #if sqs_entry != {}:
+                    #    sqs_message_entries.append(sqs_entry)
+                    sqs_message_entries.append(line)
                     if len(sqs_message_entries) == 10:
                         sqs.send_message_batch(
                         QueueUrl=os.getenv('SQS_URL'),
@@ -64,6 +62,5 @@ def process_event(event, context):
                     Entries=sqs_message_entries
                     )    
                     logging.info("All CSV Entries sent to SQS queue")
-                """
     except FileNotFoundError:
         logging.error("File not found!")

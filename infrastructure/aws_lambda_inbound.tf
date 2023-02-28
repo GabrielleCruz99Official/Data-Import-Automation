@@ -13,7 +13,7 @@ resource "aws_lambda_function" "inbound" {
   ]
   environment {
     variables = {
-      # SQS_URL = aws_sqs_queue.segment_queue.id
+      SQS_URL = aws_sqs_queue.data_migration_queue.id
       FUNCTION_DEBUG_LEVEL = var.function_debug_level
     }
   }
