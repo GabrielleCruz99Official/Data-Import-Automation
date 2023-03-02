@@ -25,6 +25,12 @@ variable "handler_inbound" {
   default     = "inbound.process_event"
 }
 
+variable "handler_outbound" {
+  type        = string
+  description = "Handler for calling serverless function"
+  default     = "outbound.process_event"
+}
+
 variable "runtime" {
   type        = string
   description = "The handler runtime version for serverless invocation"
@@ -37,6 +43,12 @@ variable "s3_bucket" {
 }
 
 variable "s3_key_inbound" {
+  type        = string
+  description = "The default key for zip artifact on s3 bucket"
+  default     = "default-artifact"
+}
+
+variable "s3_key_outbound" {
   type        = string
   description = "The default key for zip artifact on s3 bucket"
   default     = "default-artifact"
