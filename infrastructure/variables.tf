@@ -54,6 +54,12 @@ variable "s3_key_outbound" {
   default     = "default-artifact"
 }
 
+variable "s3_key_destination_layer" {
+  type        = string
+  description = "The default key for zip artifact on s3"
+  default     = "default-artifact"
+}
+
 variable "instance_name" {
   description = "Value of the Name tag for the EC2 instance"
   type        = string

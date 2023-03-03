@@ -16,7 +16,7 @@ resource "aws_lambda_function" "outbound" {
         target_arn = aws_sqs_queue.data_migration_deadletter_queue.arn
     }
     environment {
-        variables {
+        variables = {
             DLQ_SQS_URL = aws_sqs_queue.data_migration_deadletter_queue.id
             #SEGMENT_API_KEY = var.segment_api_key
             #SEGMENT_API_SECRET = var.segment_api_secret
