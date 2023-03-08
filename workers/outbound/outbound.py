@@ -36,7 +36,7 @@ def process_event(event, context):
     event_list = [event for event in event_records if event not in dlq_list]
 
 
-# Push event records to mParticle
+# Push event records to destination (e.g. Segment)
     if event_list:
         event_records = {'Records': ''}
         event_records['Records'] = event_list
