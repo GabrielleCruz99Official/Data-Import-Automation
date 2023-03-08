@@ -1,4 +1,3 @@
 boto3
 pandas
-analytics-node
-objects-node
+segment-analytics-python
