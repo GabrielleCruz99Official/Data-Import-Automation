@@ -1,9 +1,9 @@
 resource "aws_lambda_function" "inbound" {
-  s3_bucket     = var.s3_bucket
-  s3_key        = var.s3_key_inbound
+  #s3_bucket     = var.s3_bucket
+  #s3_key        = var.s3_key_inbound
+  filename = data.archive_file.inbound_zip.output_path
   function_name = "${var.project}-${var.env}-inbound"
   role = aws_iam_role.migration_role.arn
-  publish = var.bump_version
   handler = var.handler_inbound
   runtime = var.runtime
   timeout     = 900

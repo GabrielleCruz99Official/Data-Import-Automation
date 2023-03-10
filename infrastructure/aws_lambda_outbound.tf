@@ -1,13 +1,13 @@
 resource "aws_lambda_function" "outbound" {
-    s3_bucket = var.s3_bucket
-    s3_key = var.s3_key_outbound
+    #s3_bucket = var.s3_bucket
+    #s3_key = var.s3_key_outbound
+    filename = data.archive_file.outbound_zip.output_path
     function_name = "${var.project}-${var.env}-outbound"
     role = aws_iam_role.migration_role.arn
     publish = true
     handler = var.handler_outbound
     runtime = var.runtime
     timeout = 300
-    reserved_concurrent_executions = 1
     #layers = [aws_lambda_layer_version.lambda_layer_data_migration.arn]
     depends_on = [
         aws_iam_role_policy_attachment.lambda_logs
@@ -23,20 +23,6 @@ resource "aws_lambda_function" "outbound" {
             FUNCTION_DEBUG_LEVEL = var.function_debug_level
         }
     }
-}
-
-resource "aws_lambda_provisioned_concurrency_config" "example" {
-    function_name = aws_lambda_function.outbound.function_name
-    provisioned_concurrent_executions = 1
-    qualifier = aws_lambda_function.outbound.version
-}
-
-resource "aws_lambda_layer_version" "lambda_layer_data_migration" {
-    s3_bucket = var.s3_bucket
-    s3_key = var.s3_key_destination_layer
-    layer_name = "destination_python"
-
-    compatible_runtimes = [var.runtime]
 }
 
 resource "aws_cloudwatch_log_group" "function_log_group_outbound" {
