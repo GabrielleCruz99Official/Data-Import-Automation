@@ -3,7 +3,7 @@ import os
 import tempfile
 import urllib
 import csv
-from utilities import debug_level
+from utilities import debug_level, build_dictionary
 import logging
 
 if len(logging.getLogger().handlers) > 0:
@@ -42,13 +42,11 @@ def process_event(event, context):
         with open(temp_file, encoding='utf-8-sig', newline='') as csv_file:
             reader = csv.DictReader(csv_file, delimiter=',')
             for line in reader:
-                print(line)
                 sqs_message_entries = []
                 for line in reader:
-                    #sqs_entry = build_dictionary(line)
-                    #if sqs_entry != {}:
-                    #    sqs_message_entries.append(sqs_entry)
-                    sqs_message_entries.append(line)
+                    sqs_entry = build_dictionary(line)
+                    if sqs_entry != {}:
+                        sqs_message_entries.append(sqs_entry)
                     if len(sqs_message_entries) == 10:
                         sqs.send_message_batch(
                         QueueUrl=os.getenv('SQS_URL'),

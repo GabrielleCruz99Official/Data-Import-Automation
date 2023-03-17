@@ -1,4 +1,5 @@
 from constants import *
+from uuid import uuid4 as generate_id
 import json
 import os
 import logging
@@ -37,3 +38,36 @@ def find_last_name(reader_dict):
         if last_name in keys:
             return reader_dict[last_name]
     logging.warning("No valid last name header found in csv keys.")
+
+def build_dictionary(reader_dict):
+    """Turns a CSV line dictionary into an SQS entry.
+    
+    Parameters
+    ----------
+    reader_dict
+        A CSV line converted into a dictionary instance
+    
+    Returns
+    sqs_entry
+        A dictionary containing an SQS body with valid entries
+    """
+
+    sqs_entry = {}
+    sqs_body = {}
+
+    # check if keys exist in file, then find value
+    email = find_email(reader_dict)
+    first_name = find_first_name(reader_dict)
+    last_name = find_last_name(reader_dict)
+
+    # add to SQS body if value is not null or blank
+    sqs_body["first_name"] = first_name
+    sqs_body["last_name"] = last_name
+    sqs_body["email"] = email
+
+    sqs_entry['Id'] = str(generate_id())
+    sqs_entry['MessageBody'] = json.dumps(sqs_body)
+
+    print(sqs_entry['MessageBody'])
+
+    return sqs_entry
