@@ -9,6 +9,11 @@ resource "aws_s3_bucket" "csv_bucket" {
   force_destroy = true
 }
 
+resource "aws_s3_object" "outbound" {
+  bucket = "${aws_s3_bucket.csv_bucket.id}"
+  key = "Out/"
+}
+
 resource "aws_lambda_permission" "allow_bucket" {
   statement_id = "AllowExecutionFromS3Bucket"
   action = "lambda:InvokeFunction"
@@ -20,4 +25,14 @@ resource "aws_lambda_permission" "allow_bucket" {
 resource "aws_iam_role_policy_attachment" "lambda_s3"{
   role = aws_iam_role.migration_role.name
   policy_arn = aws_iam_policy.lambda_s3_pol.arn
+}
+
+resource "aws_s3_bucket_notification" "aws_inbound_lambda_trigger" {
+  bucket = aws_s3_bucket.csv_bucket.id
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.inbound.arn
+    events = ["s3:ObjectCreated:*"]
+    filter_prefix = "Out/"
+  }
+  depends_on = [aws_lambda_permission.allow_bucket]
 }

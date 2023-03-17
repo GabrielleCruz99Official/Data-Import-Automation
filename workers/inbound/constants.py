@@ -1,5 +1,5 @@
-EMAIL_HEADERS = ["Email", "Email Address", "Email Address 电子邮箱"]
+EMAIL_HEADERS = ["email", "Email", "Email Address", "Email Address 电子邮箱"]
 
-FIRST_NAME_HEADERS = ["first name", "First Name"]
+FIRST_NAME_HEADERS = ["firstname", "first name", "First Name"]
 
-LAST_NAME_HEADERS = ["last name", "Last Name"]
+LAST_NAME_HEADERS = ["lastname", "last name", "Last Name"]

@@ -33,7 +33,7 @@ resource "aws_cloudwatch_log_group" "function_log_group_outbound" {
     }
 }
 
-resource "aws_lambda_event_source_mapping" "event_source_mapping" {
+resource "aws_lambda_event_source_mapping" "outbound_event_source_mapping" {
     event_source_arn = aws_sqs_queue.data_migration_queue.arn
     enabled = true
     function_name = aws_lambda_function.outbound.qualified_arn
