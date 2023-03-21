@@ -1,4 +1,5 @@
 from utilities import *
+import segment.analytics as analytics
 import logging
 #import sqs_utilis as sqs
 
