@@ -60,6 +60,12 @@ variable "s3_key_destination_layer" {
   default     = "default-artifact"
 }
 
+variable "segment_write_key" {
+  type        = string
+  description = "Write Key for Segment AWS source"
+  default     = "dummy write key"
+}
+
 variable "instance_name" {
   description = "Value of the Name tag for the EC2 instance"
   type        = string
