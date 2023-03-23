@@ -2,6 +2,7 @@ resource "aws_lambda_function" "outbound" {
     #s3_bucket = var.s3_bucket
     #s3_key = var.s3_key_outbound
     filename = data.archive_file.outbound_zip.output_path
+    source_code_hash = data.archive_file.outbound_zip.output_base64sha256
     function_name = "${var.project}-${var.env}-outbound"
     role = aws_iam_role.migration_role.arn
     publish = true
@@ -24,6 +25,13 @@ resource "aws_lambda_function" "outbound" {
     }
 }
 
+resource "aws_lambda_layer_version" "lambda_layer_segment" {
+  filename = "${path.module}/../package/analytics-python-master.zip"
+  layer_name = "segment_python"
+
+  compatible_runtimes = [var.runtime]
+}
+
 resource "aws_cloudwatch_log_group" "function_log_group_outbound" {
     name = "/aws/lambda/${aws_lambda_function.outbound.function_name}"
     retention_in_days = 30
@@ -32,7 +40,7 @@ resource "aws_cloudwatch_log_group" "function_log_group_outbound" {
     }
 }
 
-resource "aws_lambda_event_source_mapping" "outbound_event_source_mapping" {
+resource "aws_lambda_event_source_mapping" "event_source_mapping" {
     event_source_arn = aws_sqs_queue.data_migration_queue.arn
     enabled = true
     function_name = aws_lambda_function.outbound.qualified_arn

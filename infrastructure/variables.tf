@@ -54,7 +54,7 @@ variable "s3_key_outbound" {
   default     = "default-artifact"
 }
 
-variable "s3_key_destination_layer" {
+variable "s3_key_segment_layer" {
   type        = string
   description = "The default key for zip artifact on s3"
   default     = "default-artifact"

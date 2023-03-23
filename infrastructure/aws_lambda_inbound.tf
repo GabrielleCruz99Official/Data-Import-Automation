@@ -2,6 +2,7 @@ resource "aws_lambda_function" "inbound" {
   #s3_bucket     = var.s3_bucket
   #s3_key        = var.s3_key_inbound
   filename = data.archive_file.inbound_zip.output_path
+  source_code_hash = data.archive_file.inbound_zip.output_base64sha256
   function_name = "${var.project}-${var.env}-inbound"
   role = aws_iam_role.migration_role.arn
   handler = var.handler_inbound

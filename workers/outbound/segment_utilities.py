@@ -7,7 +7,7 @@ def on_error(error, items):
 
 def login_client():
     write_key = os.getenv('SEGMENT_WRITE_KEY')
-    analytics.Client(write_key, debug=True, on_error=on_error, send=False, 
+    analytics.Client(write_key, debug=True, on_error=on_error, send=True, 
                      max_queue_size=100000, upload_interval=5, upload_size=100, gzip=True)
 
 def build_user_identity(data):
