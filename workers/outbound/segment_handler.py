@@ -1,12 +1,12 @@
 from utilities import *
-import segment.analytics as analytics
+from segment import analytics as analytics
 from segment_utilities import *
 import logging
 import json
 
 """ LOGGING """
 if len(logging.getLogger().handlers) > 0:
-    logging.getLogger.setLevel(debug_level())
+    logging.getLogger().setLevel(debug_level())
 else:
     logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('segment').setLevel('DEBUG')

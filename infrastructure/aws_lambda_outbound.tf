@@ -9,7 +9,7 @@ resource "aws_lambda_function" "outbound" {
     handler = var.handler_outbound
     runtime = var.runtime
     timeout = 300
-    #layers = [aws_lambda_layer_version.lambda_layer_data_migration.arn]
+    layers = [aws_lambda_layer_version.lambda_layer_segment.arn]
     depends_on = [
         aws_iam_role_policy_attachment.lambda_logs
     ]
@@ -26,7 +26,7 @@ resource "aws_lambda_function" "outbound" {
 }
 
 resource "aws_lambda_layer_version" "lambda_layer_segment" {
-  filename = "${path.module}/../package/analytics-python-master.zip"
+  filename = "${path.module}/../package/segment.zip"
   layer_name = "segment_python"
 
   compatible_runtimes = [var.runtime]
