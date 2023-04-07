@@ -52,6 +52,15 @@ def test_email_long_domain():
     test_email = f"me.too@{random_domain}.com"
     assert is_legit_email(test_email) == False
 
+### Lowercase Method Tests ###
+def test_lowercase_text():
+    test_text = "MASTERING"
+    assert lower(test_text) == "mastering"
+
+def test_lowercase_none():
+    test_text = None
+    assert lower(test_text) == None
+
 ### Whitespace Method Tests ###
 def test_clean_whitespaces():
     test_text = "   eloquent   "

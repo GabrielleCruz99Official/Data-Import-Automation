@@ -1,5 +1,6 @@
 import segment.analytics as analytics
 import os
+from utilities import *
 from uuid import uuid4 as generate_userid
 
 def on_error(error, items):
@@ -11,10 +12,10 @@ def login_client():
                      max_queue_size=100000, upload_interval=5, upload_size=100, gzip=True)
 
 def build_user_identity(data):
+    print(data)
     return {
-        'email': data.get('email'),
-        'firstName': data.get('firstName'),
-        'lastName': data.get('lastName')
+        'email': f"{lower(data.get('email'))}",
+        'name': f"{capitalize(data.get('firstName'))} {capitalize(data.get('lastName'))}",
     }
 
 def identify_user(user):
@@ -24,4 +25,5 @@ def identify_user(user):
     and record traits or properties on them.
     """
     new_userID = generate_userid()
+    print(user)
     analytics.identify(new_userID, user)

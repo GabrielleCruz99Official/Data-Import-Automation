@@ -66,6 +66,14 @@ def is_legit_email(text):
 
     return True
 
+def lower(text):
+    """ This method transforms the input text to lowercase. 
+    
+    If the text is null or None, the method returns a NoneType instance.
+    """
+    
+    return None if text is None else text.lower()
+
 def clean_white_spaces(text):
     """ This method clears the whitespaces from the input text. 
     
