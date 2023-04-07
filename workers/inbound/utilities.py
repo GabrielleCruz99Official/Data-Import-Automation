@@ -61,8 +61,8 @@ def build_dictionary(reader_dict):
     last_name = find_last_name(reader_dict)
 
     # add to SQS body if value is not null or blank
-    sqs_body["first_name"] = first_name
-    sqs_body["last_name"] = last_name
+    sqs_body["firstName"] = first_name
+    sqs_body["lastName"] = last_name
     sqs_body["email"] = email
 
     sqs_entry['Id'] = str(generate_id())
