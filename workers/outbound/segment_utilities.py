@@ -1,18 +1,18 @@
 import segment.analytics as analytics
-import os
 from utilities import *
 from uuid import uuid4 as generate_id
 import json
-
-analytics.write_key = '07TBfhDd5BjdUYhmTzfgFOmuHy5g68BN'
 
 def on_error(error, items):
     print("Error occurred:", error)
 
 def initialize_write_key():
-    write_key = os.getenv('SEGMENT_WRITE_KEY')
-    analytics.Client(write_key, debug=True, on_error=on_error, send=True, 
-                     max_queue_size=100000, upload_interval=5, upload_size=100, gzip=True)
+    analytics.write_key = '07TBfhDd5BjdUYhmTzfgFOmuHy5g68BN'
+    analytics.debug = True
+    analytics.on_error = on_error
+    analytics.send = True
+    #analytics.Client(MY_WRITE_KEY, debug=True, on_error=on_error, send=True, 
+    #                 max_queue_size=100000, upload_interval=5, upload_size=100, gzip=True)
 
 def is_valid_elem(elem):
     """Checks if the incoming SQS data is a valid Segment identity element.
