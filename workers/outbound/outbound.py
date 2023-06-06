@@ -33,9 +33,8 @@ def process_event(event, context):
 
     event_records = event.get("Records")
     dlq_list = [event for event in event_records if int(event.get(
-        'messageAttributes', {}).get('retry_counter', {}).get('stringValue', 0)) > 5]
+        'messageAttributes', {}).get('retry_counter', {}).get('stringValue', 0)) > 1]
     event_list = [event for event in event_records if event not in dlq_list]
-
 
 # Push event records to destination (e.g. Segment)
     if event_list:
@@ -44,7 +43,6 @@ def process_event(event, context):
         segment_handler(event_records)
 
 # send event_records that require retries to dlq
-
     if dlq_list:
         dlq_event_records = {'Records': ''}
         dlq_event_records['Records'] = dlq_list

@@ -2,6 +2,16 @@ import segment.analytics as analytics
 from utilities import *
 from uuid import uuid4 as generate_id
 import json
+import logging
+import os
+#import sqs_utilities as sqs
+
+""" LOGGING """
+if len(logging.getLogger().handlers) > 0:
+    logging.getLogger().setLevel(debug_level())
+else:
+    logging.basicConfig(level=logging.DEBUG)
+logging.getLogger('segment').setLevel('DEBUG')
 
 def on_error(error, items):
     print("Error occurred:", error)
@@ -28,7 +38,7 @@ def is_valid_elem(elem):
         True if the email identity in the Batch is valid
     """
 
-    return is_legit_email(elem.get('email'))
+    return is_legit_email(elem.get('body').get('email'))
 
 def convert_to_segment_elem(elem):
     """Convert SQS Queue JSON into an Segment identity element
@@ -45,30 +55,57 @@ def convert_to_segment_elem(elem):
     """
 
     body = json.loads(elem['body'])
-
     for key in body:
         body[key] = clean_white_spaces(body[key])
     
     return build_user_identity(body)
 
-def call_segment(batch_list):
+def call_segment(batch_list, EVENT=None):
     for user in batch_list:
-        identify_user(user)
+        try:
+            identify_user(user)
+        except:
+            logging.error(f"Failed\n{user}")
+            # pass event 
+            raise
+            
 
 def build_user_identity(data):
-    print(data)
     return {
-        "email": f"{lower(data.get('email'))}",
-        "name": f"{capitalize(data.get('firstName'))} {capitalize(data.get('lastName'))}",
+        "userId": f"{data.get('id')}",
+        "body": {
+            "email": f"{lower(data.get('email'))}",
+            "name": f"{capitalize(data.get('firstName'))} {capitalize(data.get('lastName'))}",
+        }
     }
 
-def identify_user(user):
+def identify_user(user, timeout=0.1):
     """Adds a user to the Segment environment
 
     This method allows Segment to reference and identify the current user,
     and record traits or properties on them.
     """
-    userId = str(generate_id())
-    print(user)
-    print(userId)
-    analytics.identify(userId, user)
+    #try:
+    #response=
+    analytics.identify(user.get('userId'), user.get('body'))
+    #response.raise_for_status()
+    print("User added!")
+    #except analytics.AnalyticsError as error_response:
+        #handle_api_exception(user, error_response, timeout)
+
+
+### API EXCEPTION HANDLER ###
+### WILL DOUBLE-CHECK PACKAGE
+### FOR AnalyticsError behavoir
+def handle_api_exception(batch, error, timeout):
+    """Handle error responses from Segment"""
+    if has_to_be_retried(error.status) and timeout < 60:
+        new_timeout = timeout * 2
+        identify_user(batch, new_timeout)
+    else:
+        print(f"Exception while calling Segment: {error}\n")
+        raise error
+
+def has_to_be_retried(response_status):
+    """Check if request must be retried"""
+    return response_status == 429 or response_status == 500

@@ -4,7 +4,7 @@ resource "aws_sqs_queue" "data_migration_queue" {
     receive_wait_time_seconds   = 10
     visibility_timeout_seconds  = 300
     content_based_deduplication = false
-    redrive_policy              = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.data_migration_deadletter_queue.arn}\",\"maxReceiveCount\":4}"
+    redrive_policy              = "{\"deadLetterTargetArn\":\"${aws_sqs_queue.data_migration_deadletter_queue.arn}\",\"maxReceiveCount\":1}"
 }
 
 resource "aws_sqs_queue" "data_migration_deadletter_queue" {

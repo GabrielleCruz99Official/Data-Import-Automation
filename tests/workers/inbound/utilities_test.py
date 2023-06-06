@@ -21,3 +21,9 @@ def test_valid_last_name_key():
     random_last = ''.join(random.choice(letters) for i in range(8))
     test_dict['Last Name'] = random_last
     assert find_last_name(test_dict) == random_last
+
+def test_valid_id_key():
+    letters = string.ascii_lowercase
+    random_id = ''.join(random.choice(letters) for i in range(12))
+    test_dict['id'] = random_id
+    assert find_id(test_dict) == random_id

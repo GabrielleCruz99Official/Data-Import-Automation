@@ -39,6 +39,13 @@ def find_last_name(reader_dict):
             return reader_dict[last_name]
     logging.warning("No valid last name header found in csv keys.")
 
+def find_id(reader_dict):
+    keys = set(list(reader_dict.keys()))
+    for id in ID_HEADERS:
+        if id in keys:
+            return reader_dict[id]
+    logging.warning("No valid id header found in csv keys.")
+
 def build_dictionary(reader_dict):
     """Turns a CSV line dictionary into an SQS entry.
     
@@ -59,11 +66,13 @@ def build_dictionary(reader_dict):
     email = find_email(reader_dict)
     first_name = find_first_name(reader_dict)
     last_name = find_last_name(reader_dict)
+    id = find_id(reader_dict)
 
     # add to SQS body if value is not null or blank
     sqs_body["firstName"] = first_name
     sqs_body["lastName"] = last_name
     sqs_body["email"] = email
+    sqs_body["id"] = id
 
     sqs_entry['Id'] = str(generate_id())
     sqs_entry['MessageBody'] = json.dumps(sqs_body)
