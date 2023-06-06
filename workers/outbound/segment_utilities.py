@@ -17,7 +17,7 @@ def on_error(error, items):
     print("Error occurred:", error)
 
 def initialize_write_key():
-    analytics.write_key = '07TBfhDd5BjdUYhmTzfgFOmuHy5g68BN'
+    analytics.write_key = os.getenv('SEGMENT_WRITE_KEY')
     analytics.debug = True
     analytics.on_error = on_error
     analytics.send = True

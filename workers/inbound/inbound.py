@@ -41,24 +41,23 @@ def process_event(event, context):
     try:
         with open(temp_file, encoding='utf-8-sig', newline='') as csv_file:
             reader = csv.DictReader(csv_file, delimiter=',')
+            sqs_message_entries = []
             for line in reader:
-                sqs_message_entries = []
-                for line in reader:
-                    sqs_entry = build_dictionary(line)
-                    if sqs_entry != {}:
-                        sqs_message_entries.append(sqs_entry)
-                    if len(sqs_message_entries) == 10:
-                        sqs.send_message_batch(
-                        QueueUrl=os.getenv('SQS_URL'),
-                        Entries=sqs_message_entries
-                        )    
-                        logging.info("CSV Entries Batch sent to SQS queue")
-                        sqs_message_entries = []
-                if(len(sqs_message_entries) > 0):
+                sqs_entry = build_dictionary(line)
+                if sqs_entry != {}:
+                    sqs_message_entries.append(sqs_entry)
+                if len(sqs_message_entries) == 10:
                     sqs.send_message_batch(
                     QueueUrl=os.getenv('SQS_URL'),
                     Entries=sqs_message_entries
                     )    
-                    logging.info("All CSV Entries sent to SQS queue")
+                    logging.info("CSV Entries Batch sent to SQS queue")
+                    sqs_message_entries = []
+            if(len(sqs_message_entries) > 0):
+                sqs.send_message_batch(
+                QueueUrl=os.getenv('SQS_URL'),
+                Entries=sqs_message_entries
+                )    
+                logging.info("All CSV Entries sent to SQS queue")
     except FileNotFoundError:
         logging.error("File not found!")

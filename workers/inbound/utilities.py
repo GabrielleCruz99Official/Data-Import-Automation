@@ -77,6 +77,4 @@ def build_dictionary(reader_dict):
     sqs_entry['Id'] = str(generate_id())
     sqs_entry['MessageBody'] = json.dumps(sqs_body)
 
-    print(sqs_entry['MessageBody'])
-
     return sqs_entry
