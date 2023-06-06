@@ -1,5 +1,4 @@
 from utilities import *
-from segment_handler import segment_handler
 import logging
 #import sqs_utilis as sqs
 
@@ -41,7 +40,7 @@ def process_event(event, context):
     if event_list:
         event_records = {'Records': ''}
         event_records['Records'] = event_list
-        segment_handler(event_records)
+        #mparticle_handler(event_records)
 
 # send event_records that require retries to dlq
 

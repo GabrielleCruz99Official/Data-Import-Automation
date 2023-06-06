@@ -9,6 +9,11 @@ resource "aws_s3_bucket" "csv_bucket" {
   force_destroy = true
 }
 
+resource "aws_s3_object" "outbound" {
+  bucket = "${aws_s3_bucket.csv_bucket.id}"
+  key = "Out/"
+}
+
 resource "aws_lambda_permission" "allow_bucket" {
   statement_id = "AllowExecutionFromS3Bucket"
   action = "lambda:InvokeFunction"
