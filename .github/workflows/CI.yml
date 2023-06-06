@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Terraform validate
+        run: terraform validate
+      - name: Terraform plan
+        run: terraform plan -out=tfplan
+      - name: Terraform apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply tfplan
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install yamllint
+        run: sudo apt-get install yamllint -y
+      - name: Lint YAML files
+        run: yamllint .
+      - name: Check Terraform formatting
+        run: terraform fmt -recursive -check .
+      - name: Install TFLint
+        uses: wata727/tflint-action@v1.3.0
+      - name: Lint Terraform files with TFLint
+        run: tflint .
+  
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Terraform CLI
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: '1.0.9'
+    - name: Terraform init
+      run: |
+        cd terraform
+        terraform init \
+          -backend-config="key=states/terraform_dev.tfstate" \
+          -backend-config="bucket=${ARTIFACT_BUCKET_NAME}" \
+          -backend-config="region=${AWS_DEFAULT_REGION}"
+    - name: Terraform validate
+      run: cd terraform && terraform validate
+
+  producer_lambda_tests:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.8
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Run tests
+      run: cd tests/workers/producer && pytest -v
+
+  consumer_lambda_tests:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.8
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Run tests
+      run: cd tests/workers/consumer && pytest -v
+      
+  
